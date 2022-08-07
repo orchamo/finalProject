@@ -23,6 +23,8 @@ urlpatterns = [
     
     #Delete
     path('deleterole', views.delete_role, name = "deleterole"),
+    path('deletecountry', views.delete_country, name = "deletecountry"),
+    path('deleteuser', views.delete_user, name = "usercountry"),
 
 
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -73,6 +73,7 @@ def add_user(request):
 @permission_classes([IsAuthenticated])
 def assign_role(request):
     user = request.user
+    print(user)
     role = User_Roles.objects.get(role_name=request.data["role"])
     try:
         Users.objects.create(user=user,
@@ -186,7 +187,25 @@ def delete_role(request):
         print(e)
         return JsonResponse({"role delete" : "failed"})
     
-    
+@api_view(['DELETE'])
+def delete_country(request):
+    try:
+        temp_object = Countries.objects.get(id = request.data['id'])
+        temp_object.delete()
+        return JsonResponse({"country delete":"succesful"})
+    except Exception as e:
+        print(e)
+        return JsonResponse({"country delete" : "failed"})
+
+@api_view(['DELETE'])
+def delete_user(request):
+    try:
+        temp_object = User.objects.get(id = request.data['id'])
+        temp_object.delete()
+        return JsonResponse({"user delete":"succesful"}) 
+    except Exception as e:
+        print(e)
+        return JsonResponse({"user delete" : "failed"})
 
 
 
