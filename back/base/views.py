@@ -9,8 +9,14 @@ from django.contrib.auth.models import User
 from rest_framework.renderers import JSONRenderer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from base.models import Users,Airline_Companies,Countries,User_Roles, Administrators,Customers, Flights, Tickets
+from base.models import Airline_Companies,Countries,User_Roles, Administrators,Customers, Flights, Tickets
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import user_passes_test
 
+# @user_passes_test(lambda u: u.is_superuser)
+
+User = get_user_model()
 def Index(request):
     return HttpResponse("test")
 
@@ -51,7 +57,11 @@ def add_role(request):
         return Response({'Role already exist'})
     return Response({'New Role added'})
 
+
 @api_view(['POST'])
+#@staff_member_required
+# @permission_classes([IsAdminUser])
+# @user_passes_test(lambda u: u.is_superuser)
 def add_country(request):
     try:
         Countries.objects.create(name=request.data['name'])
@@ -76,8 +86,8 @@ def assign_role(request):
     print(user)
     role = User_Roles.objects.get(role_name=request.data["role"])
     try:
-        Users.objects.create(user=user,
-                            user_role = role )
+        user.user_role_id = role
+        user.save()
     except Exception as e:
         print (e)
         return JsonResponse({"Role assigned already" : "invalid role"})
@@ -87,15 +97,15 @@ def assign_role(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def assign_company_details(request):
-    user = Users.objects.get(user = request.user.id )
+    user = User.objects.get(id = request.user.id )
     country = Countries.objects.get(name = request.data["country"])
     name = request.data["company name"]
-    userOb = request.user
+    user_ob = request.user
     try :
         Airline_Companies.objects.create(name = name, country_id = country, user_id = user)
-        userOb.is_staff = 1
-        userOb.first_name = name
-        userOb.save()
+        user_ob.is_staff = 1
+        user_ob.first_name = name
+        user_ob.save()
     except Exception as e:
         print (e)
         return JsonResponse({"user already assigned as a company" : "cannot comply"})
@@ -104,7 +114,7 @@ def assign_company_details(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def assign_administrator(request):
-    user = Users.objects.get(user = request.user.id )
+    user = User.objects.get(user = request.user.id )
     first = request.data["first name"]
     last = request.data["last name"]
     userOb = request.user
@@ -122,7 +132,7 @@ def assign_administrator(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def assign_customer(request):
-    user = Users.objects.get(user = request.user.id )
+    user = User.objects.get(user = request.user.id )
     first = request.data["first name"]
     last = request.data["last name"]
     adress = request.data["adress"]
@@ -161,7 +171,7 @@ def assign_flight(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def book_ticket(request):
-    user = Users.objects.get(user = request.user.id )
+    user = User.objects.get(user = request.user.id )
     flight = Flights.objects.get(id = request.data["flight id"])
 
     try:
@@ -188,6 +198,7 @@ def delete_role(request):
         return JsonResponse({"role delete" : "failed"})
     
 @api_view(['DELETE'])
+
 def delete_country(request):
     try:
         temp_object = Countries.objects.get(id = request.data['id'])
@@ -198,6 +209,7 @@ def delete_country(request):
         return JsonResponse({"country delete" : "failed"})
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_user(request):
     try:
         temp_object = User.objects.get(id = request.data['id'])
@@ -207,8 +219,160 @@ def delete_user(request):
         print(e)
         return JsonResponse({"user delete" : "failed"})
 
+@api_view(['DELETE'])
+@staff_member_required
+def delete_flight(request):
+    flight = Flights.objects.get(id = request.data['id'])
+    if request.user.id == flight.airline_company_id:
+        try:
+            flight.delete()
+            return JsonResponse({"flght delete":"succesful"}) 
+        except Exception as e:
+            print(e)
+            return JsonResponse({"flight delete" : "failed"})
+    else:
+        return JsonResponse({"access denied" : "thats not your flight"})
 
+@api_view(['DELETE'])
+@staff_member_required
+def delete_ticket(request):
+    ticket = Tickets.objects.get(id = request.data['id'])
+    try:
+        ticket.delete()
+        return JsonResponse({"ticket delete": "success"})
+    except Exception as e:
+        print(e)
+        return JsonResponse({"ticket delete" : "failed"})
 
+#UPDATE
+# --------------------------------------------------------------------------------------
+
+@api_view (['PUT'])
+def update_role_name(request):
+    role = User_Roles.objects.get(id = request.data['id'])
+
+    role.role_name = request.data['new name']
+    role.save()
+
+@api_view (['PUT'])
+def update_country_name(request):
+    country = Countries.objects.get(id = request.data['id'])
+
+    country.name = request.data['new name']
+    country.save()
+
+@api_view (['PUT'])
+def update_user_details(request):
+    # username email password
+    user = User.objects.get(id = request.data['id'])
+    
+    if request.data['new username'] == '':
+        pass
+    else:
+        user.username = request.data['new username']
+        user.save()
+
+    if request.data['new password'] == '':
+        pass
+    else:
+        user.password = request.data['new password']
+        user.save()
+
+    if request.data['new username'] == '':
+        pass
+    else:
+        user.email = request.data['new email']
+        user.save()
+    
+    user.save()
+
+@api_view (['PUT'])
+def update_company_details(request):
+    company = Airline_Companies.objects.get(id = request.data['id'])
+    user = request.user
+    country = Countries.objects.get(name = request.data['new country'])
+
+    if request.data['new country'] == '':
+        pass
+    else:
+        company.country_id = country.id
+        company.save()
+
+    if request.data['new name'] == '':
+        pass
+    else:
+        company.name = request.data['new name']
+        user.first_name = request.data['new name']
+        company.save()
+        user.save()
+    
+@api_view (['PUT'])
+def update_customer_details(request):
+    customer = Customers.objects.get(id = request.data['id'])
+    user = request.user
+    
+    if request.data['new first name'] == '':
+        pass
+    else:
+        customer.country = request.data['new first name']
+        user.first_name = request.data['new first name']
+        customer.save()
+        user.save()
+    
+    if request.data['new last name'] == '':
+        pass
+    else:
+        customer.country = request.data['new last name']
+        user.last_name = request.data['new last name']
+        customer.save()
+        user.save()
+        
+    if request.data['new adress'] == '':
+        pass
+    else:
+        customer.country = request.data['new adress']
+        customer.save()
+
+    if request.data['new phone'] == '':
+        pass
+    else:
+        customer.country = request.data['new phone']
+        customer.save()
+    
+    if request.data['new credit'] == '':
+        pass
+    else:
+        customer.country = request.data['new credit']
+        customer.save()
+    
+
+@api_view (['PUT'])
+def update_administrator_details(request):
+    administrator = Administrators.objects.get(id = request.data['id'])
+    user = request.user
+
+    if request.data['new first name'] == '':
+        pass
+    else:
+        administrator.first_name = request.data['new first name']
+        user.first_name = request.data['new first name']
+        administrator.save()
+        user.save()
+    
+    if request.data['new last name'] == '':
+        pass
+    else:
+        administrator.last_name = request.data['new last name']
+        user.last_name = request.data['new last name']
+        administrator.save()
+        user.save()
+        
+@api_view (['PUT'])
+def update_flight_details(request):
+    pass
+@api_view (['PUT'])
+def update_ticket_details(request):
+    pass
 #SERIALIZERS
 #---------------------------------------------------------------------------------------
 
@@ -217,10 +381,10 @@ class UserRolesSerializer(ModelSerializer):
         model = User_Roles
         fields = '__all__'
 
-class UsersSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
     class Meta:
-        model = Users
-        fields = '__all__'
+        model = User
+        fields = ('id', 'username','user_role_id')
 
 class CountriesSerializer(ModelSerializer):
     class Meta:
@@ -279,7 +443,7 @@ def view_all_airlines(request):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def view_all_users(request):
-    serializer =  UsersSerializer(Users.objects.all(), many = True)
+    serializer =  UserSerializer(User.objects.all(), many = True)
     return JsonResponse({"all users": serializer.data})
 
 @api_view(['GET'])
