@@ -366,13 +366,44 @@ def update_administrator_details(request):
         user.last_name = request.data['new last name']
         administrator.save()
         user.save()
-        
+
 @api_view (['PUT'])
 def update_flight_details(request):
-    pass
+    flight = Flights.objects.get(id = request.data['id'])
+    origin = Countries.objects.get(name = request.data['new origin'])
+    destination = Countries.objects.get(name = request.data['new destination'])
+
+    if request.data['new origin'] == '':
+        pass
+    else:
+        flight.origin_country_id = origin.id
+        flight.save()
+    
+    if request.data['new destination'] == '':
+        pass
+    else:
+        flight.destiantion_country_id = destination.id
+        flight.save()
+
+    # change departure time
+    # change lading time
+
+    if request.data['tickets amount'] == '':
+        pass
+    else:
+        flight.remaining_tickets = request.data['tickets amount']
+
+    
 @api_view (['PUT'])
 def update_ticket_details(request):
-    pass
+    ticket = Tickets.objects.get(id = request.data['id'])
+    customer = Customers.objects.get(id = request.data['id'])
+
+    if ticket == '' :
+        pass
+    else:
+        ticket.customer_id = customer.id
+
 #SERIALIZERS
 #---------------------------------------------------------------------------------------
 
@@ -502,4 +533,23 @@ def view_all_customer_tickets(request):
     tickets = user.tickets_set.all()
     serializer =  TicketsSerializer(tickets, many = True)
     return JsonResponse({"your ticket bookings": serializer.data})
+
+
+#Get flights by origin country
+
+@api_view(['GET'])
+def view_flight_by_origin(request):
+    origin = Countries.objects.get(name = request.data('country'))
+    flights = Flights.objects.get(origin_country_id = origin.id)
+    serializer = FlightsSerializer(flights, many = True)
+    return JsonResponse({"all flight leaving this location" : serializer.data})
+
+#Get flights by destination country
+
+@api_view(['GET'])
+def view_flight_by_destination(request):
+    destination = Countries.objects.get(name = request.data('country'))
+    flights = Flights.objects.get(destination_country_id = destination.id)
+    serializer = FlightsSerializer(flights, many = True)
+    return JsonResponse({"all flight arriving to this destination" : serializer.data})
 
