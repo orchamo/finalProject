@@ -514,13 +514,13 @@ def view_aviation_flights(request):
     serializer =  FlightsSerializer(flights, many = True)
     return JsonResponse({"all flights of your company": serializer.data})
 
-@api_view(['GET'])
-@permission_classes([IsAdminUser])
-def view_aviation_tickets(request):
-    user = request.user
-    tickets = user.tickets_set.all()
-    serializer =  TicketsSerializer(tickets , many = True)
-    return JsonResponse({"all tickets of your company": serializer.data})
+# @api_view(['GET'])
+# @permission_classes([IsAdminUser])
+# def view_aviation_tickets(request):
+#     user = request.user
+#     tickets = user.tickets_set.all()
+#     serializer =  TicketsSerializer(tickets , many = True)
+#     return JsonResponse({"all tickets of your company": serializer.data})
 
 
 #VIEW FOR CUSTOMER

@@ -59,11 +59,11 @@ class Customers(models.Model):
 
 class Flights(models.Model):
     id = models.BigAutoField(primary_key= True)
-    airline_company_id = models.ForeignKey(Airline_Companies, on_delete=models.SET_NULL, null=True)
-    origin_country_id = models.ForeignKey(Countries,on_delete=models.SET_NULL,null= True)
-    destination_country_id = models.ForeignKey(Countries,on_delete=models.SET_NULL, null=True, related_name='Destination_Country_Id' )
-    departure_time = forms.DateTimeField(input_formats=["%Y-%m-%dT%H:%M", ])
-    landing_time = forms.DateTimeField(input_formats=["%Y-%m-%dT%H:%M", ])
+    airline_company = models.ForeignKey(Airline_Companies, on_delete=models.SET_NULL, null=True)
+    origin_country = models.ForeignKey(Countries,on_delete=models.SET_NULL,null= True)
+    destination_country = models.ForeignKey(Countries,on_delete=models.SET_NULL, null=True, related_name='Destination_Country_Id' )
+    departure_time = models.DateTimeField()
+    landing_time = models.DateTimeField()
     remaining_tickets = models.IntegerField()
 
     def __str__(self):
@@ -71,8 +71,8 @@ class Flights(models.Model):
 
 class Tickets(models.Model):
     id = models.BigAutoField(primary_key=True)
-    customer_id = models.ForeignKey(Customers,on_delete= models.SET_NULL, null= True)
-    flight_id = models.ForeignKey(Flights,on_delete=models.SET_NULL,null=True)
+    customer = models.ForeignKey(Customers,on_delete= models.SET_NULL, null= True)
+    flight = models.ForeignKey(Flights,on_delete=models.SET_NULL,null=True)
 
     class Meta:
         unique_together = [['customer_id', 'flight_id']]
