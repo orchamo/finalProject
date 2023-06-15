@@ -17,7 +17,7 @@ class User_Roles(models.Model):
      	   return self.role_name
 
 class User(AbstractUser):
-    user_role =  models.ForeignKey(User_Roles, on_delete= models.SET_NULL, null=True)
+    user_role =  models.ForeignKey(User_Roles, on_delete= models.CASCADE, null=True)
     
 
 class Countries(models.Model):
@@ -30,7 +30,7 @@ class Countries(models.Model):
 class Airline_Companies(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.TextField(max_length=100)
-    country_id = models.ForeignKey(Countries, on_delete= models.SET_NULL, null = True)
+    country_id = models.ForeignKey(Countries, on_delete= models.CASCADE, null = True)
     user_id = models.ForeignKey(User,on_delete = models.CASCADE ,null = True)
 
     def __str__(self):
@@ -59,25 +59,26 @@ class Customers(models.Model):
 
 class Flights(models.Model):
     id = models.BigAutoField(primary_key= True)
-    airline_company = models.ForeignKey(Airline_Companies, on_delete=models.SET_NULL, null=True)
-    origin_country = models.ForeignKey(Countries,on_delete=models.SET_NULL,null= True)
-    destination_country = models.ForeignKey(Countries,on_delete=models.SET_NULL, null=True, related_name='Destination_Country_Id' )
+    airline_company = models.ForeignKey(Airline_Companies, on_delete=models.CASCADE, null=True)
+    origin_country = models.ForeignKey(Countries,on_delete=models.CASCADE,null= True)
+    destination_country = models.ForeignKey(Countries,on_delete=models.CASCADE, null=True, related_name='Destination_Country_Id' )
     departure_time = models.DateTimeField()
     landing_time = models.DateTimeField()
     remaining_tickets = models.IntegerField()
+    price = models.IntegerField(default= 0 )
 
     def __str__(self):
-     	   return self.origin_country_id + " " + self.destination_country_id
+     	   return str(self.origin_country_id) + " " + str(self.destination_country_id)
 
 class Tickets(models.Model):
     id = models.BigAutoField(primary_key=True)
-    customer = models.ForeignKey(Customers,on_delete= models.SET_NULL, null= True)
-    flight = models.ForeignKey(Flights,on_delete=models.SET_NULL,null=True)
+    customer = models.ForeignKey(Customers,on_delete= models.CASCADE, null= True)
+    flight = models.ForeignKey(Flights,on_delete=models.CASCADE,null=True)
 
     class Meta:
         unique_together = [['customer_id', 'flight_id']]
 
     def __str__(self):
-     	   return self.customer_id + " " + self.flight_id
+     	   return str(self.customer_id) + " " + str(self.flight_id)
     
     

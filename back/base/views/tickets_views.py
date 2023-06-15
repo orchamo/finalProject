@@ -13,14 +13,21 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def book_ticket(request):
-    user = User.objects.get(user = request.user.id )
-    flight = Flights.objects.get(id = request.data["flight id"])
+User = get_user_model()
 
+
+@api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+def book_ticket(request):
+    # user = User.objects.get(user = request.user.id )
+    print(request.data)
+    print(request.data["user_id"])
+    user = User.objects.get(id = request.data["user_id"] )
+    print(user.id)
+    flight = Flights.objects.get(id = request.data["id"])
+    print(flight)
     try:
-        Tickets.objects.create(customer_id = user, flight_id = flight)
+        Tickets.objects.create(customer_id = user.id , flight_id = flight.id)
         flight.remaining_tickets -= 1
         if flight.remaining_tickets == -1:
             return JsonResponse({"not able to book ": "no tickets remaining"})
@@ -29,10 +36,17 @@ def book_ticket(request):
         return JsonResponse({"not able to book ": "try again"})
     return JsonResponse({"flight booked succesfuly ": "enjoy your trip"})
 
+@api_view(["GET"])
+def ticket_by_flight_and_customer_id(request):
+    customer = Customers.objects.get(user_id = request.user_id)
+    ticket = Tickets.objects.get(customer_id = customer.id, flight_id = request.flight_id)
+    return Response(ticket.id)
+
 @api_view(['DELETE'])
-@staff_member_required
-def delete_ticket(request):
-    ticket = Tickets.objects.get(id = request.data['id'])
+# @staff_member_required
+def delete_ticket(request,id):
+    print(id)
+    ticket = Tickets.objects.get(id = id)
     try:
         ticket.delete()
         return JsonResponse({"ticket delete": "success"})
@@ -56,6 +70,15 @@ class TicketsSerializer(ModelSerializer):
         model = Tickets
         fields = '__all__'
 
+    # def get_tickets_by_customer(self, customer_id):
+    #     tickets = Tickets.objects.get(customer_id = customer_id)
+    #     tickets_arr= []
+    #     for ticket in tickets:
+    #         flight = Flights.objects.get(id = tickets.flight_id)
+    #         tickets_arr.append({
+
+    #         })
+
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def view_all_tickets(request):
@@ -66,9 +89,9 @@ def view_all_tickets(request):
 #--------------------------------------------------------------------
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def view_all_customer_tickets(request):
-    user = request.user
+# @permission_classes([IsAuthenticated])
+def view_all_customer_tickets(request, id):
+    user = Customers.objects.get(user_id = id)
     tickets = user.tickets_set.all()
     serializer =  TicketsSerializer(tickets, many = True)
     return JsonResponse({"your ticket bookings": serializer.data})

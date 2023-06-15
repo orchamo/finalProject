@@ -24,9 +24,9 @@ def add_role(request):
     return Response({'New Role added'})
 
 @api_view(['DELETE'])
-def delete_role(request):
+def delete_role(request, id):
     try:
-        temp_object = User_Roles.objects.get(id = request.data['id'])
+        temp_object = User_Roles.objects.get(id = id)
         temp_object.delete()
         return JsonResponse({"role delete": "succesful"})
     except Exception as e:

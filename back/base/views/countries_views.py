@@ -5,14 +5,21 @@ from base.models import Countries
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 
 User = get_user_model()
 
 @api_view(['GET'])
-def view_all_countries(self):
-    serializer =  CountriesSerializer(Countries.objects.all(), many = True)
-    return JsonResponse({"all countries": serializer.data})
+def view_all_countries(request):
+    serializer =  CountriesSerializer().get_all_countries()
+    return Response(serializer)
+
+@api_view(['GET'])
+def view_one_country(self, id):
+    serializer =  CountriesSerializer(Countries.objects.get(id = id), many = True)
+    return JsonResponse({"country requested": serializer.data})
+
 
 @api_view(['POST'])
 def add_country(request):
@@ -39,7 +46,20 @@ def update_country_name(request):
     country.name = request.data['new name']
     country.save()
 
-class CountriesSerializer(ModelSerializer):
+class CountriesSerializer(serializers.ModelSerializer):
+    country_name = serializers.StringRelatedField()
     class Meta:
         model = Countries
         fields = '__all__'
+
+    def get_all_countries(self):
+        countries = Countries.objects.all()
+        countries_ar = []
+        for country in countries:
+            countries_ar.append({
+                "id": country.id,
+                "name" : country.name
+            },)
+        return countries_ar
+    
+    

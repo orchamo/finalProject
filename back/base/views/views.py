@@ -27,6 +27,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
  
         # Add custom claims
         token['username'] = user.username
+        token['usertype'] = user.user_role_id
         # token['userrole'] = user.User_Role
         # ...
  
@@ -552,4 +553,57 @@ def view_flight_by_destination(request):
     flights = Flights.objects.get(destination_country_id = destination.id)
     serializer = FlightsSerializer(flights, many = True)
     return JsonResponse({"all flight arriving to this destination" : serializer.data})
+
+
+@api_view(['POST'])
+def create_database(request):
+        try:
+            User_Roles.objects.create(role_name='Administrator')
+            User_Roles.objects.create(role_name='Aviation')
+            User_Roles.objects.create(role_name='Customer')
+            Countries.objects.create(name='Greece')
+            Countries.objects.create(name='Israel')
+            Countries.objects.create(name='Germany')
+            Countries.objects.create(name='Spain')
+            Countries.objects.create(name='France')
+            User.objects.create_user(username='dan',
+                                 email='da@n.com',
+                                 password='123',
+                                 is_staff=False,
+                                 user_role_id = User_Roles.objects.get(role_name='Customer').id,
+                                 first_name = 'dan',
+                                 last_name = 'din')
+            User.objects.create_user(username='or',
+                                 email='o@r.com',
+                                 password='123',
+                                 is_staff=True,
+                                 user_role_id = User_Roles.objects.get(role_name='Administrator').id,
+                                 is_superuser = 1,
+                                 first_name = 'or',
+                                 last_name = 'hamo')
+            User.objects.create_user(username='ran',
+                                 email='ra@n.com',
+                                 password='123',
+                                 is_staff=False,
+                                 user_role_id = User_Roles.objects.get(role_name='Aviation').id,
+                                 first_name = 'elal')
+            Customers.objects.create(first_name = 'dan', last_name = 'din', adress = 'jerusalem',
+                                phone_nu = '056', credit_card_nu = '321',
+                                user_id = User.objects.get(username = 'dan'))
+            Airline_Companies.objects.create(name = 'elal', country_id = Countries.objects.get(name ='Israel'), user_id = User.objects.get(username = 'ran'))
+            Administrators.objects.create(first_name = 'or', last_name = 'hamo', user_id = User.objects.get(username = 'or'))
+            Flights.objects.create(airline_company_id = Airline_Companies.objects.get(name = 'elal').id,
+            origin_country_id = Countries.objects.get(name ='Israel').id,
+            destination_country_id = Countries.objects.get(name ='Germany').id,
+            departure_time = '2016-05-18T15:37:36.993048Z',
+            landing_time = '2017-05-18T15:37:36.993048Z',
+            remaining_tickets = 200, price = 120)
+            Tickets.objects.create(customer_id = Customers.objects.get(first_name= 'dan').id, flight_id = Flights.objects.get(id = '1').id)
+            
+            
+        except Exception as e:
+            print(e)
+            return Response({'Country already in DB'})
+        return Response({'New Country added'})
+    
 

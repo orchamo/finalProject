@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from django.http import HttpResponse, JsonResponse
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.contrib.auth.models import User
@@ -12,6 +12,8 @@ from base.models import Airline_Companies,Countries,User_Roles, Administrators,C
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 User = get_user_model()
@@ -23,7 +25,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
  
         # Add custom claims
         token['username'] = user.username
-        # token['userrole'] = user.User_Role
+        token['usertype'] = user.User_Role
         # ...
  
         return token
@@ -32,10 +34,28 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    try:
+        refresh_token = request.data['refresh_token']
+        print(refresh_token)
+        token = RefreshToken(refresh_token)
+        print(token)
+        token.blacklist()
+
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+    except Exception as e:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['POST'])
 def add_user(request):
     User.objects.create_user(username=request.data['username'],
                                  email=request.data['email'],
-                                 password=request.data['pwd'],is_staff=False)
+                                 password=request.data['pwd'],
+                                 is_staff=False,
+                                 user_role_id = User_Roles.objects.get(role_name=request.data['role']).id,
+                                 first_name =request.data['firstname'])
 
     return JsonResponse({"user created":request.data['username']} )
 
@@ -55,9 +75,9 @@ def assign_role(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def delete_user(request):
+def delete_user(request, id):
     try:
-        temp_object = User.objects.get(id = request.data['id'])
+        temp_object = User.objects.get(id = id)
         temp_object.delete()
         return JsonResponse({"user delete":"succesful"}) 
     except Exception as e:
@@ -93,6 +113,20 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username','user_role_id')
+
+    # def user_details(self):
+    #     users = User.objects.all()
+    #     users_ar=[]
+    #     for obj in users:
+    #         users_ar.append({
+    #             "id" = obj.id,
+
+
+    #         },
+    #         )
+
+        
+
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])

@@ -14,9 +14,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def assign_customer(request):
-    user = User.objects.get(user = request.user.id )
+    user = User.objects.get(user = 2 )
     first = request.data["first name"]
     last = request.data["last name"]
     adress = request.data["adress"]
@@ -85,3 +85,9 @@ class CustomersSerializer(ModelSerializer):
 def view_all_customers(request):
     serializer =  CustomersSerializer(Customers.objects.all(), many = True)
     return JsonResponse({"all customer user profiles": serializer.data})
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def view_one_customer(request, id):
+    serializer =  CustomersSerializer(Customers.objects.get(user_id = id), many = True)
+    return JsonResponse({f"{serializer.first_name} data is ": serializer.data})
