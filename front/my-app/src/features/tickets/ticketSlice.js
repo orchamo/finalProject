@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { customerTickets, bookTicket, deleteTicket } from "./ticketApi";
+import { customerTickets, bookTicket, deleteTicket,deleteTicketByCustomerAndFlightID} from "./ticketApi";
 
 const initialState = {
     status: "idle",
@@ -26,6 +26,14 @@ export const deleteTicketAsync = createAsyncThunk(
     "ticket/deleteticket",
     async(ticketinfo) => {
         const response = await deleteTicket(ticketinfo);
+        return response.data
+    }
+)
+
+export const deleteTicketByCustomerAndFlightIDAsync = createAsyncThunk(
+    "ticket/deleteticketbycustomerandflightid",
+    async(ticketinfo) => {
+        const response = await deleteTicketByCustomerAndFlightID(ticketinfo);
         return response.data
     }
 )
@@ -60,6 +68,12 @@ export const ticketSlice = createSlice({
                 state.status ="fulfilled";
                 state.ticketsArr=action.payload;
 
+            })
+            .addCase(deleteTicketByCustomerAndFlightIDAsync.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(deleteTicketByCustomerAndFlightIDAsync.fulfilled, (state,action)=>{
+                state.status ="fulfilled";
             })
     }
 })

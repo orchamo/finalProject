@@ -38,3 +38,15 @@ export function ticketIdByCustomerAndFlightID(details){
     .get(MY_SERVER+ `ticketid?${vari.toString()}`)
     .then((res) => resolve({data:res.data}, console.log(res.data))))
 }
+
+export function deleteTicketByCustomerAndFlightID(details){
+    console.log(details)
+    const vari = new URLSearchParams()
+    vari.append("user_id", details.user_id)
+    vari.append("flight_id", details.flight_id)
+    console.log(vari)
+    return new Promise((resolve) =>
+    axios
+    .delete(MY_SERVER+ `deleteticketbycustomerandflightid?${vari.toString()}`)
+    .then((res) => resolve({data:res.data}, console.log(res.data))))
+}

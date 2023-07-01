@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector, } from "react-redux";
-import { allFlightsAsync, deleteFlightt, selectFlights, selectFlightstat } from "../features/flight/flightSlice";
-import { Box, Button, Card, CardMedia, Container, Grid, CardContent, CardActions, Typography, Alert, AlertTitle } from '@mui/material';
-import { bookTicketAsync, deleteTicketAsync } from "../features/tickets/ticketSlice";
+import { allFlightsAsync, selectFlights, selectFlightstat } from "../features/flight/flightSlice";
+import { Button, Card, CardMedia, Grid, CardContent, CardActions, Typography, Alert, AlertTitle } from '@mui/material';
+import { bookTicketAsync } from "../features/tickets/ticketSlice";
 import { selectlogin } from "../features/login/loginSlice";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -14,7 +14,9 @@ import Link from '@mui/material/Link';
 import jwt_decode from "jwt-decode";
 
 const FlightCards = () => {
-        const my_token = (jwt_decode(localStorage.getItem("token")))
+        let my_token = (localStorage.getItem("token"))
+        let decoded_token = ""
+        console.log(my_token)
         const flightarr = useSelector(selectFlights);
         const flightstat = useSelector(selectFlightstat);
         let [loginalert, setloginalert] = useState(false)
@@ -34,6 +36,7 @@ const FlightCards = () => {
                 dispatch(allFlightsAsync()); console.log(flightstat)
         }, [delet]);
         const islogged = useSelector(selectlogin)
+        if (my_token != null) { decoded_token = jwt_decode(my_token) };
         return (<div>
                 <Grid container rowSpacing={3} sx={{ margin: 'auto' }}>
                         {flightarr.map((item, i) =>
@@ -59,19 +62,19 @@ const FlightCards = () => {
 
                                                 </CardContent>
                                                 <CardActions>
-                                                        {/* {islogged = true ? <Button sx={{margin:"auto",marginBottom:"10px", height : "60px", width:"70%", fontSize : "medium"}}
-                                                variant="contained"
-                                                onClick={(() => dispatch(bookTickett({ id: item.id }), setdelet(!delet)))}
-                                                >Book Flight
-                                                </Button>
-                                                :  */}
-                                                        <Button sx={{ margin: "auto", marginBottom: "10px", height: "60px", width: "70%", fontSize: "medium" }}
+                                                        {islogged == false ? <Button sx={{ margin: "auto", marginBottom: "10px", height: "60px", width: "70%", fontSize: "medium" }}
                                                                 variant="contained"
-                                                                onClick={()=>dispatch(bookTicketAsync({user_id : my_token.user_id, id : item.id}))}
+                                                                onClick={handleClickOpen}
                                                         >Book Flight
                                                         </Button>
+                                                                :
+                                                                <Button sx={{ margin: "auto", marginBottom: "10px", height: "60px", width: "70%", fontSize: "medium" }}
+                                                                        variant="contained"
+                                                                        onClick={() => dispatch(bookTicketAsync({ user_id: decoded_token.user_id, id: item.id }))}
+                                                                >Book Flight
+                                                                </Button>
 
-                                                        {/* } */}
+                                                        }
                                                 </CardActions>
                                                 <Dialog
                                                         open={open}
@@ -86,7 +89,7 @@ const FlightCards = () => {
                                                                 <DialogContentText id="alert-dialog-description">
                                                                         <Alert severity="info">
                                                                                 <AlertTitle>In order to book this flight you need to be logged in</AlertTitle>
-                                                                                <Link to="/signup" className="btn btn-primary" color={'white'}><strong>click to sign in/register</strong></Link>
+                                                                                <Link underline="none" href="/signin" className="btn btn-primary" style={{ color: 'white' }} ><strong>click to sign in/register</strong></Link>
                                                                         </Alert>
                                                                 </DialogContentText>
                                                         </DialogContent>

@@ -188,7 +188,7 @@ function CustomerNav() {
                   </DialogTitle>
 
                   <DialogActions>
-                    <Button onClick={handleClose}>Stay</Button>
+                    <Button onClick={() => handleClose()}>Stay</Button>
                     <Button onClick={() => { handleClose(); dispatch(logout()); }} autoFocus>
                       Logout
                     </Button>

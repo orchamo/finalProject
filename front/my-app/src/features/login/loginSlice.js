@@ -20,7 +20,7 @@ export const doLoginAsync = createAsyncThunk(
   "login/doLogin",
   async (newlogin) => {
     const response = await doLogin(newlogin);
-    console.log(jwt_decode(localStorage.getItem("token")))
+    // console.log(jwt_decode(localStorage.getItem("token")))
     return response.data;
   }
 );
@@ -53,9 +53,11 @@ export const loginSlice = createSlice({
   reducers: {
     checkLogin: (state) => {
       let myToken = localStorage.getItem("token");
+      console.log(myToken)
       if (myToken) {
         state.loginStatus = true;
         state.username = jwt_decode(myToken).username;
+        state.userType = jwt_decode(myToken).usertype;
       }
     },
     logout: (state) => {
@@ -80,15 +82,21 @@ export const loginSlice = createSlice({
     })
     .addCase(doLoginAsync.fulfilled, (state, action) => {
       console.log(action.payload.access);
+      console.log("oved");
       state.token = action.payload.access;
       localStorage.setItem("token", state.token);
+      localStorage.setItem("authenticated", true);
       state.status = "loading";
       state.loginStatus = true;
       state.username = jwt_decode(state.token).username;
       state.userType = jwt_decode(state.token).usertype;
       console.log(state.username);
       console.log(state.userType);
+    })
+    .addCase(doLoginAsync.rejected, (state, action) => {
+      console.log("lo oved")
     });
+    
   },
 });
 

@@ -1,12 +1,17 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { selectUserType, selectlogin } from '../features/login/loginSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { checkLogin, selectUserType, selectlogin } from '../features/login/loginSlice'
 import BaseNav from './BaseNav'
 import CustomerNav from './CostumerNav'
 import AviationNav from './AviationNav'
+
 const NavSwitch = ({ children }) => {
+    const dispatch = useDispatch()
+    const chechTheLogin = dispatch(checkLogin())
+    console.log (chechTheLogin)
     const userType = useSelector(selectUserType)
     const loginState = useSelector(selectlogin)
+    console.log(loginState)
     return (
         <div >
             <div>

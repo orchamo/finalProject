@@ -13,9 +13,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
-import {doLoginAsync,} from "../features/login/loginSlice";
-import { registerAsync } from '../features/register/registerSlice';
-import { useState,useEffect } from 'react';
+import { doLoginAsync, } from "../features/login/loginSlice";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -34,10 +35,19 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-    const dispatch = useDispatch()
-    const [username, setusername] = useState("")
-    const [password, setpassword] = useState("")
-  
+  const dispatch = useDispatch()
+  const [username, setusername] = useState("")
+  const [password, setpassword] = useState("")
+  const navigate = useNavigate();
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    console.log("handleworks")
+    await dispatch( doLoginAsync({ username: username, password: password }));
+    const authenticateStatus = localStorage.getItem("authenticated");
+    if (authenticateStatus) {
+      navigate("/")
+    }
+  }
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -66,8 +76,8 @@ export default function SignIn() {
               name="username"
               autoComplete="username"
               autoFocus
-              value = {username}
-              onChange={(e) => {setusername(e.target.value)}}
+              value={username}
+              onChange={(e) => { setusername(e.target.value) }}
             />
             <TextField
               margin="normal"
@@ -78,8 +88,8 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-              value = {password}
-              onChange={(e) => {setpassword(e.target.value)}}
+              value={password}
+              onChange={(e) => { setpassword(e.target.value) }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -89,7 +99,7 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={(e) => dispatch(doLoginAsync({username: username ,password: password}, e.preventDefault()))}
+              onClick={handleSignIn}
             >
               Sign In
             </Button>

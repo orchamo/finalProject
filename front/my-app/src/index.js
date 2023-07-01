@@ -8,8 +8,10 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.css'
 
 const container = document.getElementById('root');
+console.log(container)
 const root = createRoot(container);
-
+console.log(root)
+console.log("123")
 root.render(
   <React.StrictMode>
     <BrowserRouter>

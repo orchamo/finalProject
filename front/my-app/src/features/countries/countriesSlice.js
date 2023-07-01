@@ -9,7 +9,6 @@ const initialState = {
 export const getAllCountriesAsync = createAsyncThunk(
     "countries/getAllCountries",
     async () => {
-      // debugger;
       const response = await getAllCountries();
       return response.data;
     }
@@ -23,7 +22,6 @@ export const countriesSlice = createSlice({
   },
   
   extraReducers: (builder) => {
-    // debugger;
     builder
       .addCase(getAllCountriesAsync.pending, (state) => {
         state.status = 'loading';

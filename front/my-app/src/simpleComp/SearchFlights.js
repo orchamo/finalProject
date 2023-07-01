@@ -41,7 +41,6 @@ const SearchFlights = () => {
     function searchDetect() {
         console.log(destination);
         console.log(origin);
-        debugger;
         if (destination == "" && origin != "") {
             dispatch(flightByOriginAsync({ origin: origin }))
         }

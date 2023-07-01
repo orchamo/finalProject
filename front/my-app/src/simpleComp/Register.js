@@ -1,9 +1,9 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { registerAsync } from '../features/register/registerSlice';
-import { FormControl, Link, Grid, Avatar, Typography, CssBaseline, FormControlLabel, InputLabel, MenuItem, Select, Box, Button, Container, Checkbox, Switch, ThemeProvider } from '@mui/material';
+import {  Link, Grid, Avatar, Typography, CssBaseline, MenuItem,  Box, Button, Container, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 const defaultTheme = createTheme();

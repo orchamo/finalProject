@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addFlight, flightByDestination,FlightByDestOrig, allFlights, deleteFlight, flightByOrigin, flightsByUser } from "./flightAPI";
+import { addFlight, flightByDestination,FlightByDestOrig, allFlights, deleteFlight, flightByOrigin, flightsByUser, flightsByCompany } from "./flightAPI";
 
 const initialState = {
     status: 'idle',
@@ -31,6 +31,17 @@ export const flightsByUserAsync = createAsyncThunk(
         return response.data
     }
 )
+
+export const flightsByCompanyAsync = createAsyncThunk(
+    'flight/flightByUser',
+    async (userId) => {
+        console.log(userId);
+        const response = await flightsByCompany(userId);
+        
+        return response.data
+    }
+)
+
 export const flightByDestinationAsync = createAsyncThunk(
     "flight/flightByDestinationn",
     async (destination) => {

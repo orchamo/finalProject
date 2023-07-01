@@ -10,7 +10,6 @@ const initialState = {
 export const registerAsync = createAsyncThunk(
     "register/register",
     async(credentials) => {
-        debugger;
         const response = await Register(credentials)
         return response.data
     }

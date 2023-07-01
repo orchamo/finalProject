@@ -1,8 +1,6 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector, } from "react-redux";
-import { Button, Card, CardMedia,  Grid, CardContent, CardActions, Typography, Alert, AlertTitle } from '@mui/material';
-import { deleteTicketAsync,deleteTicketByCustomerAndFlightIDAsync} from "../features/tickets/ticketSlice";
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { flightsByCompanyAsync, selectFlights } from '../features/flight/flightSlice'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,29 +8,22 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Link from '@mui/material/Link';
 import jwtDecode from "jwt-decode";
-import { flightsByUserAsync, selectFlights } from "../features/flight/flightSlice";
-
-const MyFlights = () => {
+import { Button, Card, CardMedia,  Grid, CardContent, CardActions, Typography, Alert, AlertTitle } from '@mui/material';
+import { deleteFlightAsync } from '../features/flight/flightSlice';
+const CompanyFlights = () => {
     const dispatch = useDispatch()
-    const flightsarr = useSelector(selectFlights);
-    const [open, setOpen] = useState(false);
-    const [render, setrender] = useState(true);
+    const flightsarr = useSelector(selectFlights)
     const my_token = jwtDecode(localStorage.getItem("token"))
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    console.log(my_token.user_id)
+    const [render,setrender] = useState(true)
+    const [open, setOpen] = useState(false);
+    useEffect(()=> {dispatch(flightsByCompanyAsync(my_token.user_id))}, [render])
     const handleClose = () => {
         setOpen(false);
     };
-    useEffect(() => { dispatch(flightsByUserAsync(my_token.user_id)) }, [render]
-
-    )
-    return (
-        <div>
-            these are all of your booked flights
-
-            {flightsarr.map((item, i) =>
+  return (
+    <div>
+        <h1>these are all your companies flights</h1>
+        {flightsarr.map((item, i) =>
                 <Grid item xs={6} key={i}>
 
                     <Card key={i} sx={{ width: '80%', margin: 'auto', boxSizing: 'border-box', borderRadius: 2 }}>
@@ -60,8 +51,8 @@ const MyFlights = () => {
                                 variant="contained"
                                 onClick={async (e) => {
                                     e.preventDefault()
-                                    await dispatch(deleteTicketByCustomerAndFlightIDAsync(
-                                    { user_id: my_token.user_id, flight_id: item.id }));
+                                    await dispatch(deleteFlightAsync(
+                                    { id: item.id }));
                                     setrender(!render);
                                     console.log(render)}}
                             >Cancel flight
@@ -99,8 +90,8 @@ const MyFlights = () => {
 
                 </Grid>)}
 
-        </div>
-    )
+    </div>
+  )
 }
 
-export default MyFlights
+export default CompanyFlights

@@ -12,6 +12,8 @@ import RegisterPage from './pages/RegisterPage';
 import SignIn from './pages/Signin';
 import MyFlights from './simpleComp/MyFlights';
 import NavSwitch from './simpleComp/NavSwitch';
+import AppFooter from './simpleComp/AppFooter';
+import CompanyFlights from './simpleComp/CompanyFlights';
 
 
 
@@ -37,8 +39,10 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/myflights" element={<MyFlights />} />
+          <Route path="/companyflights" element={<CompanyFlights />} />
 
         </Routes>
+        <AppFooter/>
       </NavSwitch>
     </div>
   );

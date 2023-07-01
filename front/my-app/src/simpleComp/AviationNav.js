@@ -19,7 +19,7 @@ import DialogActions from '@mui/material/DialogActions';
 import { logout, } from "../features/login/loginSlice";
 import { useDispatch } from 'react-redux';
 
-const pages = ['AddFlight', 'MyFlights', 'about'];
+const pages = ['AddFlight', 'CompanyFlights', 'about'];
 const settings = ['Profile', 'Account', 'Dashboard'];
 
 function CustomerNav() {

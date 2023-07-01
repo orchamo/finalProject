@@ -13,12 +13,9 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import {logout,} from "../features/login/loginSlice";
 import {selectlogin} from "../features/login/loginSlice"
 import { useDispatch, useSelector } from "react-redux";
+import { Icon } from '@mui/material';
 
 const pages = ['Flights', 'about'];
 
@@ -76,7 +73,10 @@ const BaseNav = () => {
     <AppBar position="static">
     <Container maxWidth="xl">
       <Toolbar disableGutters>
-        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+        <Icon>
+          <img src={require('../projectPics/easyflights-white.png')}></img>
+        </Icon>
+        {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
         <Typography
           variant="h6"
           noWrap
@@ -93,7 +93,7 @@ const BaseNav = () => {
           }}
         >
           LOGO
-        </Typography>
+        </Typography> */}
 
         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
           <IconButton
