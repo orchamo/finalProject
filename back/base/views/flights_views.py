@@ -169,24 +169,12 @@ class FlightsSerializer(ModelSerializer):
         return flights_ar
 
 
-    # add a method to get flights by origin and destination
-
-            
-            
-    
-
-# @api_view(['GET'])
-# def view_all_flights(request):
-#     serializer =  FlightsSerializer(Flights.objects.all(), many = True)
-#     return Response(serializer.data)
-
 @api_view(['GET'])
 def view_all_flights(request):
     serializer =  FlightsSerializer().get_all_flights()
     return Response(serializer)
     
 
-#view all flight related to company
 @api_view(['GET'])
 # @permission_classes([IsAdminUser])
 def view_customer_flights(request, id):
@@ -204,13 +192,11 @@ def view_customer_flights(request, id):
 def view_company_flights(request, id):
     flightsar = []
     airline = Airline_Companies.objects.get(user_id = id)
-    tickets = Tickets.objects.filter(customer = airline.id)
-    for ticket in tickets:
-        flight = Flights.objects.get(id = ticket.flight_id)
+    flights = Flights.objects.filter(airline_company_id = airline.id)
+    for flight in flights:
         flightsar.append(flight)
     serializer =  FlightsSerializer(flightsar, many = True).data
     return Response(serializer)
-#Get flights by origin country
 
 # @api_view(['GET'])
 # def view_flight_by_origin(request):
@@ -250,3 +236,10 @@ def view_flight_by_dest_orig(request):
     serializer = FlightsSerializer().get_flight_by_dest_orig(destination.id, origin.id)
     print(serializer)
     return Response(serializer)
+
+# @api_view(['GET'])
+# def view_flight_by_date(request):
+#     flights = Flights.objects.filter(departure_time__year = 2016).filter(departure_time__month = 6).filter(departure_time__day = 19)
+#     serializer = FlightsSerializer(flights, many = True).data
+#     print(serializer)
+#     return Response(serializer)

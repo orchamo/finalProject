@@ -24,13 +24,13 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
- 
+        print(token)
         # Add custom claims
         token['username'] = user.username
         token['usertype'] = user.user_role_id
         # token['userrole'] = user.User_Role
         # ...
- 
+        print(token)
         return token
 
 class MyTokenObtainPairView(TokenObtainPairView):

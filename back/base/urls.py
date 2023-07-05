@@ -22,6 +22,7 @@ urlpatterns = [
     path('alltickets/', tickets_views.view_all_tickets, name = "alltickets"),
     path('ticketid/', tickets_views.ticket_by_flight_and_customer_id, name = 'ticketid') ,
     
+    
     path('viewalladmins/', administrators_views.view_all_admins, name = "viewalladmins"),
     path('viewallarlines/', companies_views.view_all_airlines, name = "viewallarlines"),
 
@@ -31,6 +32,7 @@ urlpatterns = [
     path('allcustomers/', customers_views.view_all_customers, name = "allcustomers"),
     path('onecustomer/<id>', customers_views.view_one_customer, name = "onecustomer"),
     
+    # path('flightbydate', flights_views.view_flight_by_date, name = "flightbydate"),
     path('flightbycustomer/<id>', flights_views.view_customer_flights, name = 'customerflights'),
     path('flightbycompany/<id>', flights_views.view_company_flights, name = 'companyflights'),
     path('allflights/', flights_views.view_all_flights, name = "allflights"),
@@ -76,6 +78,7 @@ urlpatterns = [
 
     #ticket
     path('deleteticket/<id>', tickets_views.delete_ticket, name = "deleteticket"),
+    path('deleteticketbycustomerandflightid/', tickets_views.delete_ticker_by_user_and_flight, name = "deleteticketbyuserandflightid"),
 
     path('logout/', user_views.logout, name = 'logout'),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -24,11 +24,13 @@ def book_ticket(request):
     print(request.data["user_id"])
     user = User.objects.get(id = request.data["user_id"] )
     print(user.id)
+    customer = Customers.objects.get(user_id = user.id)
     flight = Flights.objects.get(id = request.data["id"])
-    print(flight)
+    print(flight.id)
     try:
-        Tickets.objects.create(customer_id = user.id , flight_id = flight.id)
+        Tickets.objects.create(customer_id = customer.id , flight_id = flight.id)
         flight.remaining_tickets -= 1
+        flight.save()
         if flight.remaining_tickets == -1:
             return JsonResponse({"not able to book ": "no tickets remaining"})
     except Exception as e:
@@ -53,6 +55,21 @@ def delete_ticket(request,id):
     except Exception as e:
         print(e)
         return JsonResponse({"ticket delete" : "failed"})
+
+@api_view(['DELETE'])
+def delete_ticker_by_user_and_flight(request):
+    customer = Customers.objects.get(user_id = request.query_params.get('user_id'))
+    flight_id = request.query_params.get('flight_id')
+    flight = Flights.objects.get(id = flight_id)
+    flight.remaining_tickets +=1
+    flight.save()
+    ticket = Tickets.objects.get(customer_id = customer.id, flight_id = flight_id)
+    try:
+        ticket.delete()
+        return Response('ticket deleted')
+    except Exception as e:
+        print(e)
+        return Response('unable to delete')
 
 @api_view (['PUT'])
 def update_ticket_details(request):
