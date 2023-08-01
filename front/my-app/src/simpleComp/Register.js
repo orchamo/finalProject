@@ -143,9 +143,9 @@ const Register = () => {
                             </Grid>
 
                             {(usertype == "Aviation") ?
-                                <Grid item xs={12} sm={6} >
-                                    <TextField required id="companyname" label="company name" variant="outlined" value={firstname} onChange={(e) => { setcompanyname(e.target.value) }} />
-                                    <TextField required id="countryname" label="country name" variant="outlined" value={countryname} onChange={(e) => { setcountryname(e.target.value) }} />
+                                <Grid container item spacing={2} >
+                                    <Grid item xs={6}><TextField required id="companyname" label="company name" variant="outlined" value={firstname} onChange={(e) => { setcompanyname(e.target.value) }} /></Grid>
+                                    <Grid item xs={6}><TextField required id="countryname" label="country name" variant="outlined" value={countryname} onChange={(e) => { setcountryname(e.target.value) }} /></Grid>
                                 </Grid>
                                 : (usertype == "Customer") ?
                                     <Grid container item spacing={2} >
