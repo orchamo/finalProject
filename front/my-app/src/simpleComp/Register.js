@@ -148,12 +148,12 @@ const Register = () => {
                                     <TextField required id="countryname" label="country name" variant="outlined" value={countryname} onChange={(e) => { setcountryname(e.target.value) }} />
                                 </Grid>
                                 : (usertype == "Customer") ?
-                                    <Grid item xs={12} sm={6} >
-                                        <TextField required id="firstname" label="first name" variant="outlined" value={firstname} onChange={(e) => { setfirstname(e.target.value) }} />
-                                        <TextField required id="lastname" label="last name" variant="outlined" value={lastname} onChange={(e) => { setlastname(e.target.value) }} />
-                                        <TextField required id="adress" label="adress" variant="outlined" value={adress} onChange={(e) => { setadress(e.target.value) }} />
-                                        <TextField required id="phonenum" label="phone num" variant="outlined" value={phonenum} onChange={(e) => { setphonenum(e.target.value) }} />
-                                        <TextField required id="creditcardnum" label="credit card num" variant="outlined" value={creditcardnum} onChange={(e) => { setcreditcardnum(e.target.value) }} />
+                                    <Grid container item spacing={2} >
+                                        <Grid item xs={6}> <TextField required id="firstname" label="first name" variant="outlined" value={firstname} onChange={(e) => { setfirstname(e.target.value) }} /> </Grid>
+                                        <Grid item xs={6}> <TextField required id="lastname" label="last name" variant="outlined" value={lastname} onChange={(e) => { setlastname(e.target.value) }} /> </Grid>
+                                        <Grid item xs={6}> <TextField required id="adress" label="adress" variant="outlined" value={adress} onChange={(e) => { setadress(e.target.value) }} /> </Grid>
+                                        <Grid item xs={6}> <TextField required id="phonenum" label="phone num" variant="outlined" value={phonenum} onChange={(e) => { setphonenum(e.target.value) }} /> </Grid>
+                                        <Grid item xs={6}> <TextField required id="creditcardnum" label="credit card num" variant="outlined" value={creditcardnum} onChange={(e) => { setcreditcardnum(e.target.value) }} /></Grid>
                                     </Grid>
                                     : undefined}
 
