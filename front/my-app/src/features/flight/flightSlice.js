@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addFlight, flightByDestination,FlightByDestOrig, allFlights, deleteFlight, flightByOrigin, flightsByUser, flightsByCompany } from "./flightAPI";
+import { addFlight, flightByDestination,FlightByDestOrig, allFlights, deleteFlight, flightByOrigin, flightsByUser, flightsByCompany, PrintData } from "./flightAPI";
 
 const initialState = {
     status: 'idle',
@@ -72,6 +72,15 @@ export const allFlightsAsync = createAsyncThunk(
     async () => {
         const response = await allFlights();
         return response.data;
+    }
+)
+
+export const printDataAsync = createAsyncThunk(
+    "flights/printdata",
+    async(date) =>{
+        console.log(date)
+        const response=await PrintData(date);
+        return response.data
     }
 )
 

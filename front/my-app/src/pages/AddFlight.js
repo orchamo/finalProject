@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addFlightAsync } from '../features/flight/flightSlice'
+import jwtDecode from "jwt-decode";
 
 const AddFlight = () => {
   const dispatch = useDispatch()
@@ -10,6 +11,7 @@ const AddFlight = () => {
   const [departure, setdeparture] = useState("")
   const [tickets, settickets] = useState("")
   const [price, setprice] = useState("")
+  const my_token = jwtDecode(localStorage.getItem("token"))
 
   return (
     <div className='App-header'>
@@ -26,7 +28,7 @@ const AddFlight = () => {
       <input name='price' placeholder='ticket price' onChange={(e) => setprice(e.target.value)}></input>
       <br></br>
       <button onClick={() => dispatch(addFlightAsync({
-        airline: 1, origin: origin,
+        airline: my_token.user_id, origin: origin,
         destination: destination, departure: departure, landing: landing, tickets: tickets,
         price: price
       }))}>Add Flight</button>

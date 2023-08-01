@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { AddCountry, AddRole, Register } from "./registerAPI";
+import { AddCountry, AddRole, AssignAviation, AssignCustomer, Register } from "./registerAPI";
 
 const initialState = {
     registerStatus : "idle",
@@ -33,6 +33,21 @@ export const addCountryAsync = createAsyncThunk(
     }
 )
 
+export const assignAviationAsync = createAsyncThunk(
+    "register/assignaviation",
+    async(credentials) => {
+        const response = await AssignAviation(credentials)
+        return response.data
+    }
+)
+export const assignCustomerAsync = createAsyncThunk(
+    "register/assigncustomer",
+    async(credentials) => {
+        const response = await AssignCustomer(credentials)
+        return response.data
+    }
+)
+
 export const registerSlice = createSlice({
     name: "register",
     initialState,
@@ -57,6 +72,17 @@ export const registerSlice = createSlice({
         .addCase(addCountryAsync.fulfilled,(state,action) => {
             state.roleStatus = 'fulfilled'
         })
-        
+        .addCase(assignAviationAsync.pending, (state) =>{
+            state.roleStatus = "pending"
+        })
+        .addCase(assignAviationAsync.fulfilled,(state,action) => {
+            state.roleStatus = 'fulfilled'
+        })
+        .addCase(assignCustomerAsync.pending, (state) =>{
+            state.roleStatus = "pending"
+        })
+        .addCase(assignCustomerAsync.fulfilled,(state,action) => {
+            state.roleStatus = 'fulfilled'
+        })
     }
 })

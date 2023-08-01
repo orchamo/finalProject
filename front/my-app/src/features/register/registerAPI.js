@@ -22,3 +22,19 @@ export function AddCountry(credentials) {
     .post(MY_SERVER + "addcountry/", credentials)
     .then((res) => resolve({data:res.data})))
 }
+
+export function AssignAviation(credentials){
+    return new Promise((resolve) => 
+    axios
+    .post(MY_SERVER+ "assigncompanydetails/", credentials)
+    .then((res) => resolve({data:res.date})))
+    
+}
+
+export function AssignCustomer(credentials){
+    return new Promise((resolve) => 
+    axios
+    .post(MY_SERVER+ "assigncustomer/", credentials)
+    .then((res) => resolve({data:res.date})))
+    
+}

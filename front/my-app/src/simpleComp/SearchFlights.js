@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector, } from "react-redux";
 import { getAllCountriesAsync, selectCountries } from "../features/countries/countriesSlice";
-import { flightByDestOrigAsync, flightByDestinationAsync, flightByOriginAsync } from "../features/flight/flightSlice"
+import { flightByDestOrigAsync, flightByDestinationAsync, flightByOriginAsync, printDataAsync } from "../features/flight/flightSlice"
 import { FormControl, InputLabel, MenuItem, Select, Box, Button, Container, Checkbox, Switch } from '@mui/material';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -34,6 +34,11 @@ const SearchFlights = () => {
     const handleDestination = (event) => {
         setdestination(event.target.value);
     };
+
+    useEffect(() => {
+        console.log(date);
+        printDataAsync({date : date})},[date]
+    )
 
     useEffect(() => {
         dispatch(getAllCountriesAsync())
