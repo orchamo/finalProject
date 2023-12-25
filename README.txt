@@ -14,7 +14,7 @@ For server side, i used Django and SQLite3.
 For user interface and connectivity to server, i used HTML/CSS, Mui, React-Router, JavaScript, Axios, Redux, JWT.
 
 
-Every model created with a complete CRUDE:
+Every model created with a complete CRUD:
     GET BY ID
     GET ALL
     ADD
