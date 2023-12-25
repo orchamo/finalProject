@@ -195,6 +195,12 @@ const BaseNav = () => {
              >Sign in
               </Typography>
             </MenuItem>
+            <MenuItem>
+            <Typography textAlign="center" component={Link} to = "/register"
+             sx = {{ textDecoration: 'none'}}
+             >Register
+              </Typography>
+              </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

@@ -1,4 +1,5 @@
 from django.urls import path
+
 from .views import views
 from .views.views import MyTokenObtainPairView
 from .views import (countries_views, administrators_views, companies_views, customers_views,
@@ -16,7 +17,7 @@ urlpatterns = [
     path('addrole/', user_roles_views.add_role, name = "addrole"),
     path('addcountry/', countries_views.add_country, name = "addcountry"),
     # Login
-    
+    path('tests', companies_views.tests, name="tests"),
     #-------Get-------
     path('customertickets/<id>', tickets_views.view_all_customer_tickets, name = "customertickets"),
     path('alltickets/', tickets_views.view_all_tickets, name = "alltickets"),
@@ -83,4 +84,5 @@ urlpatterns = [
     path('logout/', user_views.logout, name = 'logout'),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('printdata/', flights_views.print_data, name='print_data')
 ]

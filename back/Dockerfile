@@ -1,12 +1,12 @@
-FROM python:3.11.4-slim-bullseye
+FROM python:3.12-rc-slim-bullseye
 
 WORKDIR /back
 
-COPY requirements.txt requirements.txt
+COPY requirements.txt ./
 
 RUN pip3 install -r requirements.txt
 
-COPY ./back .
+COPY . .
 
 EXPOSE 8000
 

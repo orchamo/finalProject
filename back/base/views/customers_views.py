@@ -12,27 +12,27 @@ from base.models import Airline_Companies,Countries,User_Roles, Administrators,C
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
+User = get_user_model()
 
 @api_view(['POST'])
 # @permission_classes([IsAuthenticated])
 def assign_customer(request):
-    user = User.objects.get(user = 2 )
-    first = request.data["first name"]
-    last = request.data["last name"]
+    user = User.objects.get(username = request.data["username"] )
+    first = request.data["firstname"]
+    last = request.data["lastname"]
     adress = request.data["adress"]
     phone = request.data["phone"]
     credit = request.data["credit"]
-    userOb = request.user
     try:
         Customers.objects.create(first_name = first, last_name = last, adress = adress,
         phone_nu = phone, credit_card_nu = credit,  user_id = user)
-        userOb.last_name = last
-        userOb.first_name = first
-        userOb.save()
+        user.last_name = last
+        user.first_name = first
+        user.save()
     except Exception as e:
         print (e)
-        return JsonResponse({"not able to assign ": "try again"})
-    return JsonResponse({"company registered" : "enjoy"})
+        return Response("not able to assign, try again")
+    return Response("company registered,  enjoy")
 
 @api_view (['PUT'])
 def update_customer_details(request):

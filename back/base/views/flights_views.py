@@ -14,10 +14,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
 User = get_user_model()
 @api_view(['POST'])
-# @permission_classes([IsAdminUser])
+@permission_classes([IsAdminUser])
 def assign_flight(request):
     print(request.data)
-    airline = Airline_Companies.objects.get(user_id = 3).id
+    airline = Airline_Companies.objects.get(user_id = request.data["airline"]).id
     origin = Countries.objects.get(name = request.data["origin"]).id
     destination = Countries.objects.get(name = request.data["destination"]).id
     departure = request.data["departure"]
@@ -34,7 +34,7 @@ def assign_flight(request):
     return JsonResponse({"tickets registered" : "good luck"})
 
 @api_view(['DELETE'])
-# @staff_member_required
+@staff_member_required
 def delete_flight(request, id):
     print(id)
     flight = Flights.objects.get(id = id)
@@ -50,6 +50,7 @@ def delete_flight(request, id):
         return JsonResponse({"access denied" : "thats not your flight"})
 
 @api_view (['PUT'])
+@permission_classes([IsAdminUser])
 def update_flight_details(request):
     flight = Flights.objects.get(id = request.data['id'])
     origin = Countries.objects.get(name = request.data['new origin'])
@@ -176,7 +177,7 @@ def view_all_flights(request):
     
 
 @api_view(['GET'])
-# @permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated])
 def view_customer_flights(request, id):
     flightsar = []
     customer = Customers.objects.get(user_id = id)
@@ -188,7 +189,7 @@ def view_customer_flights(request, id):
     return Response(serializer)
 
 @api_view(['GET'])
-# @permission_classes([IsAdminUser])
+@permission_classes([IsAdminUser])
 def view_company_flights(request, id):
     flightsar = []
     airline = Airline_Companies.objects.get(user_id = id)
@@ -243,3 +244,8 @@ def view_flight_by_dest_orig(request):
 #     serializer = FlightsSerializer(flights, many = True).data
 #     print(serializer)
 #     return Response(serializer)
+
+@api_view(['GET'])
+def print_data(request):
+    print (request.data)
+    return ("finished")

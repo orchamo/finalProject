@@ -1,33 +1,28 @@
-VIEW ALL FOR ADMIN
+Flights Booking Website-
 
-VIEW ALL FOR SPECIFIC AIRLINE
-VIEW ALL FOR SPECIFIC FLIGHT
-VIEW ALL FOR SPECIFIC COSTUMER
+Introduction-
 
-VIEW ALL FOR SPECIFIC COSTUMER
+I designed a website to support a manager side and a client side, including aviaition companies and customers.
+The basics idea is to allow aviation companies to register flights to the database, and allow customers to
+query the database for available flights and book them.
+Both type of clients can make changes to bookings, delete, update, etc.
 
-VIEW ALL FOR SPECIFIC FLIGHT
 
-GET AIRLINE BY USERNAME
-GET COSTUMER BY USERNAME
-GET USERNAME BY USERNAME
-GET FLIGHT BY DESTINATION ID, ORIGIN ID AND DATE
-GET FLIGHTS BY AIRLINE ID 
-GET ALL FLIGHTS LANDING WITHIN 12 HOURS
-GET ALL FLIGHTS LANDING WITHIN 12 HOURS
-GET TICKETS FOR SPECIFIC COSTUMER
+User interface & Database server information-
 
-COMPLETE CRUDE:
+For server side, i used Django and SQLite3.
+For user interface and connectivity to server, i used HTML/CSS, Mui, React-Router, JavaScript, Axios, Redux, JWT.
+
+
+Every model created with a complete CRUDE:
     GET BY ID
     GET ALL
     ADD
     UPDATE
     REMOVE/DELETE
 
-GET AIRLINE BY COUNTRY
-GET FLIGHTS BY ORIGIN COUNTRY
-GET FLIGHTS BY DESTINATION COUNTRY
-GET FLIGHTS BY DEPARTURE DATE
-GET FLIGHTS BY LANDING DATE
-
-CREATE A FUNCTION THAT WRITES TO A LOG EVERY ACTION MADE.
+Each model has unique querys from the server as well.
+For example Flights model has also:
+Get Flights By Destination And Origin
+Get Flights For A Specific Customer
+Get Flights By Specific company

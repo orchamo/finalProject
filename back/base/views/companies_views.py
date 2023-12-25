@@ -12,20 +12,16 @@ from base.models import Airline_Companies,Countries,User_Roles, Administrators,C
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
-
+User = get_user_model()
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def assign_company_details(request):
-    user = User.objects.get(id = request.user.id )
+    user = User.objects.get(username = request.data["username"] )
     country = Countries.objects.get(name = request.data["country"])
-    name = request.data["company name"]
-    user_ob = request.user
+    name = request.data["companyname"]
     try :
         Airline_Companies.objects.create(name = name, country_id = country, user_id = user)
-        user_ob.is_staff = 1
-        user_ob.first_name = name
-        user_ob.save()
     except Exception as e:
         print (e)
         return JsonResponse({"user already assigned as a company" : "cannot comply"})
@@ -35,7 +31,7 @@ def assign_company_details(request):
 def update_company_details(request):
     company = Airline_Companies.objects.get(id = request.data['id'])
     user = request.user
-    country = Countries.objects.get(name = request.data['new country'])
+    country = Countries.objects.get(name = request.data['newcountry'])
 
     if request.data['new country'] == '':
         pass
@@ -61,3 +57,8 @@ class AirlineCompaniesSerializer(ModelSerializer):
 def view_all_airlines(request):
     serializer =  AirlineCompaniesSerializer(Airline_Companies.objects.all(), many = True)
     return JsonResponse({"all airline user profiles": serializer.data})
+
+@api_view(['POST'])
+def tests(request):
+    Airline_Companies.objects.create(name = 'lela', country_id = Countries.objects.get(name ='Israel'), user_id = User.objects.get(username = 'lea'))
+    return Response("promoted")

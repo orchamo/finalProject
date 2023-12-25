@@ -50,13 +50,25 @@ def logout(request):
 
 @api_view(['POST'])
 def add_user(request):
-    User.objects.create_user(username=request.data['username'],
-                                 email=request.data['email'],
-                                 password=request.data['pwd'],
-                                 is_staff=False,
-                                 user_role_id = User_Roles.objects.get(role_name=request.data['role']).id,
-                                 first_name =request.data['firstname'])
-
+    user_type = User_Roles.objects.get(role_name=request.data['role']).id
+    try:
+        if user_type == 3:
+            User.objects.create_user(username=request.data['username'],
+                                        email=request.data['email'],
+                                        password=request.data['pwd'],
+                                        is_staff=False,
+                                        user_role_id = User_Roles.objects.get(role_name=request.data['role']).id,
+                                        first_name =request.data['firstname'])
+        if user_type == 2:
+            User.objects.create_user(username=request.data['username'],
+                                        email=request.data['email'],
+                                        password=request.data['pwd'],
+                                        is_staff=True,
+                                        user_role_id = User_Roles.objects.get(role_name=request.data['role']).id,
+                                        first_name =request.data['firstname'])
+    except Exception as e:
+        print(e)
+        return Response(f'Couldnt create user : {e}')
     return JsonResponse({"user created":request.data['username']} )
 
 @api_view(['POST'])

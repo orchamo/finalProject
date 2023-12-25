@@ -17,7 +17,7 @@ User = get_user_model()
 
 
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def book_ticket(request):
     # user = User.objects.get(user = request.user.id )
     print(request.data)
@@ -45,7 +45,7 @@ def ticket_by_flight_and_customer_id(request):
     return Response(ticket.id)
 
 @api_view(['DELETE'])
-# @staff_member_required
+@permission_classes([IsAuthenticated])
 def delete_ticket(request,id):
     print(id)
     ticket = Tickets.objects.get(id = id)
@@ -57,6 +57,7 @@ def delete_ticket(request,id):
         return JsonResponse({"ticket delete" : "failed"})
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_ticker_by_user_and_flight(request):
     customer = Customers.objects.get(user_id = request.query_params.get('user_id'))
     flight_id = request.query_params.get('flight_id')
@@ -72,6 +73,7 @@ def delete_ticker_by_user_and_flight(request):
         return Response('unable to delete')
 
 @api_view (['PUT'])
+@permission_classes([IsAuthenticated])
 def update_ticket_details(request):
     ticket = Tickets.objects.get(id = request.data['id'])
     customer = Customers.objects.get(id = request.data['id'])
@@ -106,7 +108,7 @@ def view_all_tickets(request):
 #--------------------------------------------------------------------
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def view_all_customer_tickets(request, id):
     user = Customers.objects.get(user_id = id)
     tickets = user.tickets_set.all()
